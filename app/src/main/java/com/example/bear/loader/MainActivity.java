@@ -26,6 +26,10 @@ import java.util.Scanner;
 import static com.example.bear.loader.R.layout.layout;
 
 /**
+ * @author Dane Christensen
+ * @version 1.6
+ * @version 6/4/2015
+ * 
  * This MainActivity holds all of the main methods and calls
  * two threads to help with the GUI/file loading tasks
  */
