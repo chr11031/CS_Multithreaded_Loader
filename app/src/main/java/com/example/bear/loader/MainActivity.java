@@ -25,8 +25,12 @@ import java.util.Scanner;
 
 import static com.example.bear.loader.R.layout.layout;
 
-
+/**
+ * This MainActivity holds all of the main methods and calls
+ * two threads to help with the GUI/file loading tasks
+ */
 public class MainActivity extends ActionBarActivity {
+    // Each variable corresponds to a GUI feature/data
     public static ProgressBar p;
     public static List<Integer> numbers;
     public static Boolean isBuilt = false;
@@ -48,6 +52,7 @@ public class MainActivity extends ActionBarActivity {
         Button b = (Button) findViewById(R.id.B);
         Button c = (Button) findViewById(R.id.C);
 
+        // Create 3 listeners for our three buttons
         a.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
@@ -78,19 +83,32 @@ public class MainActivity extends ActionBarActivity {
         return true;
     }
 
+    /**
+     * Update, takes the most recent data from our list
+     * and handles its passing to the viewlist object
+     */
     public void update() {
         ArrayAdapter<Integer> adapter;
         adapter = new ArrayAdapter<Integer>(MainActivity.this, R.layout.layout, MainActivity.numbers);
         MainActivity.lv.setAdapter(adapter);
     }
 
+    /**
+     * CreateList, calls a "fileWrite" thread
+     * which handles the file creation
+     */
     public void createList() {
         // Launch our thread for writing data
-        fileWrite fw = new fileWrite();
+        fileWrite fw = new fileWrite("numbers.txt");
         Thread write = new Thread(fw);
         write.start();
     }
 
+    /**
+     * PopulateList, reads in a file from
+     * the indicate file and puts its contents
+     * into the List variable
+     */
     public void populateList() {
         // Load file values from numbers.txt"
         if(isBuilt == false) {
@@ -100,15 +118,14 @@ public class MainActivity extends ActionBarActivity {
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        // Launch our thread for reading data
+        // Launch our thread with a handler to allow the task to work on its own
         final Handler h = new Handler();
-        fileRead fr = new fileRead();
         new Thread(new Runnable() {
 
             // Standard function we want to run through our thread
             @Override
             public void run() {
-                new fileRead().run();
+                new fileRead("numbers.txt").run();
                 h.post(new Runnable() {
 
                             //The function we want to happen ONLY when the thread is done
@@ -118,9 +135,13 @@ public class MainActivity extends ActionBarActivity {
                            }
                        });
             }
-        }).start();
+        }).start(); // Run this thread
     }
 
+    /**
+     * ClearList, removes the data visible in the
+     * ListView object, providing a blank screen.
+     */
     public void clearList() {
         Integer[] blank = {};
         ArrayAdapter<Integer> adapter;
